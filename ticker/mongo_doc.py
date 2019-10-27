@@ -1,6 +1,10 @@
 from mongoengine import DynamicDocument, DateTimeField, Document, StringField, ListField
 from datetime import datetime
 
+__all__ = ['TickerData',
+           'SettingsList',
+           'CryptoNews']
+
 class TickerData(DynamicDocument):
     timestamp = DateTimeField(default=datetime.now, unique=True)
     meta = {

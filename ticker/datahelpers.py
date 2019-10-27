@@ -3,6 +3,7 @@ import json
 import numpy as np
 import pandas as pd
 
+__all__ = ['GetUrlData', 'get_new_unique_data']
 def get_new_unique_data(old_df:pd.DataFrame, new_df:pd.DataFrame)->pd.DataFrame:
     if old_df is None:
         return new_df

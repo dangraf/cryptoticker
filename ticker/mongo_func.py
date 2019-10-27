@@ -1,7 +1,9 @@
 import mongoengine
 from .mongo_doc import *
 
-
+__all__ = ['init_mongodb',
+           'save_tickerdata',
+           'get_settingslist']
 def init_mongodb():
     mongoengine.register_connection(alias='settings', name='apps_settings', host='userver2', port=27017)
     mongoengine.register_connection(alias='NewsDb', name='ticker_db', host='userver2', port=27017)

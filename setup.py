@@ -7,23 +7,16 @@ from setuptools import setup, find_packages
 setup(name='cryptoticker',
       description="Library to fetch crypto currancy data and save to mongodb",
       author="Daniel Grafstrom",
-      version='1.2.4',
+      version='1.0.0',
       license='GPLv3',
       packages=find_packages(exclude=['tests']),
       install_requires=['mongoengine',
-                        'pymongo'
+                        'pymongo',
                         'pandas',
                         'newspaper3k',
                         'krakenex',
-                        'requests'
-
-	
-                        'schedule'],
+                        'requests',
+                        'schedule',
+                        'datetime',
+                        'pytest'],
       )
-pandas
-numpy
-bitcoinaverage
-newspaper3k
-mongoengine
-krakenex
-requests

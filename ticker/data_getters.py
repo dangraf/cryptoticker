@@ -11,7 +11,14 @@ import requests
 
 
 # df_prev = None
-
+__all__ = ['get_coinmarketcap',
+           'get_fear_greed_index',
+           'get_kraken_orderdepth',
+           'get_global_cap',
+           'get_bitcoincharts_data',
+           'get_bitcoin_fees',
+           'get_blockchain_stats',
+           'get_news_data']
 
 def get_coinmarketcap():
     # global df_prev
@@ -43,7 +50,7 @@ def get_fear_greed_index():
     except BaseException as e:
         raise BaseException(f"{e} when getting fear_greed index")
 
-
+pair_idx = 0
 def get_kraken_orderdepth():
     """
     This getter is a bit special it's a generator instead of a single function because we want the order depth
@@ -65,26 +72,26 @@ def get_kraken_orderdepth():
             'XXBTZUSD',
             'EOSUSD',
             'XXRPZUSD']
-    for pair in pairs:
-        for i in range(retries):
-            response = kraken.query_public('Depth', {'pair': pair, 'count': depth})
-            if 'error' in response.keys() and len(response['error'])>0:
-                continue
-            df1 = pd.DataFrame(response['result'][pair]['asks'], columns=['price', 'volume', 'timestamp'])
-            df2 = pd.DataFrame(response['result'][pair]['bids'], columns=['price', 'volume', 'timestamp'])
-            # restructure data for better searchability
-            data = {'bids': df2.to_dict(orient='list'),
-                    'asks': df1.to_dict(orient='list'),
-                    'pair': pair}
-            save_tickerdata(data=data, collection_name='kraken_orderdepth')
-            yield "ok"
-            break
+    global pair_idx
+    pair = pairs[pair_idx]
+    for i in range(retries):
+        response = kraken.query_public('Depth', {'pair': pair, 'count': depth})
+        if 'error' in response.keys() and len(response['error'])>0:
+            continue
+        df1 = pd.DataFrame(response['result'][pair]['asks'], columns=['price', 'volume', 'timestamp'])
+        df2 = pd.DataFrame(response['result'][pair]['bids'], columns=['price', 'volume', 'timestamp'])
+        # restructure data for better searchability
+        data = {'bids': df2.to_dict(orient='list'),
+                'asks': df1.to_dict(orient='list'),
+                'pair': pair}
+        save_tickerdata(data=data, collection_name='kraken_orderdepth')
 
-
-
-
-
-
+        break
+    pair_idx += 1
+    pair_idx = pair_idx % len(pairs)
+    if i>0:
+        raise Exception(f"Needed {i} tries for pair {pair}")
+    return
 
 def get_global_cap():
     getter = GetUrlData('https://api.coinmarketcap.com/v1/global/')

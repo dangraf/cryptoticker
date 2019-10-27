@@ -1,15 +1,54 @@
+
+from ticker import *
 from time import sleep
+import logging
 
-from .ticker_logger import *
-from .data_getters import *
-from .ticker_scheduler import Ticker_Scheduler
-from .mongo_func import init_mongodb
+from time import sleep
+from flask import Flask, render_template
+from logging.handlers import RotatingFileHandler
 
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/stream')
+def stream():
+    def generate():
+        with open('main_scraper.log') as f:
+            while True:
+                yield f.read()
+                sleep(1)
+
+    return app.response_class(generate(), mimetype='text/plain')
+
+
+
+def create_logger():
+    logger = logging.getLogger('main_scraper')
+    logger.setLevel(logging.INFO)
+    # create file handler which logs even debug messages
+    fh = RotatingFileHandler('main_scraper.log', maxBytes=32000, backupCount=1)
+    fh.setLevel(logging.DEBUG)
+    # create console handler with a higher log level
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    # create formatter and add it to the handlers
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+    # add the handlers to the logger
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+
+    logger.info("Main_scraper started")
+    logger.debug("Main_scraper started")
+    logger.error("Main_scraper started")
 
 # todo, add automatic updates: https://hackthology.com/how-to-write-self-updating-python-programs-using-pip-and-git.html
-# todo, create HTML report to be able to login
 task_3sec = Ticker_Scheduler(update_period_s=3,
-                             callback_list=get_kraken_orderdepth,
+                             callback_list=[get_kraken_orderdepth],
                              taskname='1min tasks' )
 
 
@@ -30,5 +69,6 @@ if __name__ == "__main__":
     task_5min.start_thread()
     task_15min.start_thread()
     task_3sec.start_thread()
+    app.run()
     while 1:
         sleep(20)
