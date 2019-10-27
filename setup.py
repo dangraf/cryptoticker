@@ -18,5 +18,6 @@ setup(name='cryptoticker',
                         'requests',
                         'schedule',
                         'datetime',
-                        'pytest'],
+                        'pytest',
+                        'flask'],
       )
