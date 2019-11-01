@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 from ticker import *
 from time import sleep
