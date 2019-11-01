@@ -185,5 +185,5 @@ def get_news_data():
                         # source_url
 
             except BaseException as e:
-                logger.error('Cryptonews error{0}'.format(e))
+
                 pass
