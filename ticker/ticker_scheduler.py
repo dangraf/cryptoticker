@@ -40,9 +40,7 @@ class Ticker_Scheduler():
         while (self.running):
             for i, callback in enumerate(self.callback_list):
                 try:
-                    self.logger.info(f' Running: {callback}')
                     callback()
-
 
                 except BaseException as e:
                     self.logger.error(f"callback:{callback}: {e}")

@@ -48,7 +48,7 @@ def create_logger():
     logger.error("Main_scraper started")
 
 # todo, add automatic updates: https://hackthology.com/how-to-write-self-updating-python-programs-using-pip-and-git.html
-task_3sec = Ticker_Scheduler(update_period_s=3,
+task_3sec = Ticker_Scheduler(update_period_s=4,
                              callback_list=[get_kraken_orderdepth],
                              taskname='1min tasks' )
 

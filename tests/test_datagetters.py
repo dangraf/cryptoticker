@@ -1,6 +1,9 @@
 import pytest
 from unittest.mock import patch
 from ticker.data_getters import *
+from ticker.mongo_func import *
+from ticker.mongo_doc import *
+from time import sleep
 
 
 
@@ -64,8 +67,8 @@ def test_fear_and_greed_index(mock_save_tickerdata):
 
 @patch('ticker.data_getters.save_tickerdata')
 def test_get_kraken_orderdepth(mock_save_tickerdata):
-    for i, data in enumerate(get_kraken_orderdepth()):
-        assert data == 'ok'
+    for i in range(7):
+        get_kraken_orderdepth()
         assert mock_save_tickerdata.called
         colname = mock_save_tickerdata.call_args[1]['collection_name']
         data = mock_save_tickerdata.call_args[1]['data']
