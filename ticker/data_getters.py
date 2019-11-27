@@ -22,8 +22,12 @@ __all__ = ['get_coinmarketcap',
 
 def get_coinmarketcap():
     # global df_prev
+    headers = {
+    'Accepts': 'application/json',
+    'X-CMC_PRO_API_KEY': 'f96a1bb1-20b7-428f-9cbc-e76606d2b2f3',
+    }
 
-    getter = GetUrlData('https://api.coinmarketcap.com/v1/ticker/?limit=100')
+    getter = GetUrlData('https://api.coinmarketcap.com/v1/ticker/?limit=100', headers=headers)
     getter.do_work()
 
     try:

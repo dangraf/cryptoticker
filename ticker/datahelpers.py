@@ -15,10 +15,11 @@ def get_new_unique_data(old_df:pd.DataFrame, new_df:pd.DataFrame)->pd.DataFrame:
     return new_df[~mask].dropna()
 
 class GetUrlData:
-    def __init__(self, url):
+    def __init__(self, url, headers={'User-Agent': 'Magic Browser'}):
         self.result = None
         self.e = None
         self.url = url
+        self.headers =headers
 
     def do_work(self):
         req = urlreq.Request(url=self.url, headers={'User-Agent': 'Magic Browser'})
