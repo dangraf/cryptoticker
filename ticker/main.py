@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 from ticker import *
 from time import sleep
@@ -69,6 +70,6 @@ if __name__ == "__main__":
     task_5min.start_thread()
     task_15min.start_thread()
     task_3sec.start_thread()
-    app.run()
+    app.run(host='0.0.0.0')
     while 1:
         sleep(20)
