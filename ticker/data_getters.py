@@ -26,36 +26,32 @@ def get_coinmarketcap():
         'Accepts': 'application/json',
         'X-CMC_PRO_API_KEY': 'f96a1bb1-20b7-428f-9cbc-e76606d2b2f3',
     }
-    try:
-        ints = ['rank', 'last_updated']
-        floats = ['price_usd', 'price_btc', '24h_volume_usd', 'market_cap_usd', 'available_supply', 'total_supply',
-                  'max_supply', 'percent_change_1h', 'percent_change_24h',
-                  'percent_change_7d']
-        data = get_data(url='http://api.coinmarketcap.com/v1/ticker/?limit=100', headers=headers)
-        df = pd.DataFrame(data)
-        for i in ints:
-            df[i] = df[i].astype(int)
-        for f in floats:
-            df[f] = df[f].astype(float)
-        save_tickerdata2(data=df.to_dict(orient='records'), collection_name="coinmarketcap_top100")
-    except BaseException as e:
-        raise BaseException(f'{e}: When getting coinmarketcap data')
+    ints = ['rank', 'last_updated']
+    floats = ['price_usd', 'price_btc', '24h_volume_usd', 'market_cap_usd', 'available_supply', 'total_supply',
+              'max_supply', 'percent_change_1h', 'percent_change_24h',
+              'percent_change_7d']
+    data = get_data(url='http://api.coinmarketcap.com/v1/ticker/?limit=100', headers=headers)
+    df = pd.DataFrame(data)
+    for i in ints:
+        df[i] = df[i].astype(int)
+    for f in floats:
+        df[f] = df[f].astype(float)
+    save_tickerdata2(data=df.to_dict(orient='records'), collection_name="coinmarketcap_top100")
+
 
 
 def get_fear_greed_index():
-    try:
-        r = requests.get("https://money.cnn.com/data/fear-and-greed/")
-        data = r.text
-        search_str = "Greed Now:"
-        start = data.find("Greed Now:") + len(search_str)
-        substr = data[start:start + 10]
-        end = substr.find('(')
-        greed_index = int(substr[:end].strip())
-        data = dict()
-        data['fear_greed_idx'] = greed_index
-        save_tickerdata2(data=data, collection_name='fear_and_greed_index')
-    except BaseException as e:
-        raise BaseException(f"{e} when getting fear_greed index")
+    r = requests.get("https://money.cnn.com/data/fear-and-greed/")
+    data = r.text
+    search_str = "Greed Now:"
+    start = data.find("Greed Now:") + len(search_str)
+    substr = data[start:start + 10]
+    end = substr.find('(')
+    greed_index = int(substr[:end].strip())
+    data = dict()
+    data['fear_greed_idx'] = greed_index
+    save_tickerdata2(data=data, collection_name='fear_and_greed_index')
+
 
 
 pair_idx = 0  # used by kraken_orderdepths
@@ -109,41 +105,30 @@ def get_kraken_orderdepth():
 
 
 def get_global_cap():
-    try:
-        data = get_data(url='http://api.coinmarketcap.com/v1/global/')
+    data = get_data(url='http://api.coinmarketcap.com/v1/global/')
+    save_tickerdata2(data=data, collection_name='global_market')
 
-        save_tickerdata2(data=data, collection_name='global_market')
-    except BaseException as e:
-        raise BaseException(f"{e}: When getting global_market data")
 
 
 # max every 15 minutes
 def get_bitcoincharts_data():
-    try:
-        data = get_data(url='http://api.bitcoincharts.com/v1/markets.json')
-        df = pd.DataFrame(data)
-        df = df[df['volume'] > 0.1]
+    data = get_data(url='http://api.bitcoincharts.com/v1/markets.json')
+    df = pd.DataFrame(data)
+    df = df[df['volume'] > 0.1]
+    save_tickerdata2(data=df.to_dict(orient='records'), collection_name='bitcoincharts_global')
 
-        save_tickerdata2(data=df.to_dict(orient='records'), collection_name='bitcoincharts_global')
-
-    except BaseException as e:
-        raise BaseException(f"{e}:  when getting bitcoincharts data")
 
 
 def get_bitcoin_fees():
-    try:
-        data = get_data(url='https://bitcoinfees.earn.com/api/v1/fees/recommended')
-        save_tickerdata2(data=data, collection_name='bitcoin_fees')
-    except BaseException as e:
-        raise BaseException(f"{e}: When getting bitcoin fees")
+    data = get_data(url='https://bitcoinfees.earn.com/api/v1/fees/recommended')
+    save_tickerdata2(data=data, collection_name='bitcoin_fees')
+
 
 
 def get_blockchain_stats():
-    try:
-        data = get_data(url='https://api.blockchain.info/stats')
-        save_tickerdata2(data=data, collection_name='blockchain_stats')
-    except BaseException as e:
-        raise BaseException(f"{e}: When getting bitcoin fees")
+    data = get_data(url='https://api.blockchain.info/stats')
+    save_tickerdata2(data=data, collection_name='blockchain_stats')
+
 
 
 # get every 30 minutes? 15 seems too fast sometimes
@@ -191,5 +176,4 @@ def get_news_data():
                         # source_url
 
             except BaseException as e:
-
                 pass

@@ -18,17 +18,18 @@ def save_tickerdata2(data:Dict, collection_name: str):
     ob['timestamp'] = datetime.now()
     client = MongoClient(host='userver2', retryWrites=True)
     client['ticker_db'][collection_name].insert_one(ob)
+    client.close()
 
 
 
-def save_tickerdata(*, data:Dict, collection_name: str):
-    try:
-        obj = TickerData()
-        obj.data = data
-        obj.switch_collection(collection_name)
-        obj.save()
-    except BaseException as e:
-        print(e)
+#def save_tickerdata(*, data:Dict, collection_name: str):
+#    try:
+#        obj = TickerData()
+#        obj.data = data
+#        obj.switch_collection(collection_name)
+#        obj.save()
+#    except BaseException as e:
+#        print(e)
 
 
 def get_settingslist(listname: str) -> SettingsList:
