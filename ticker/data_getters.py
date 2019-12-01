@@ -1,5 +1,5 @@
 from time import sleep
-from .datahelpers import GetUrlData, get_data
+from .datahelpers import  get_data
 from .mongo_doc import *
 from .mongo_func import *
 import pandas as pd
