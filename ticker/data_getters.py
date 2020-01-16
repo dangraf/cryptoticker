@@ -132,7 +132,7 @@ def get_kraken_trades():
         data = kraken.fetch_trades(symbol=pair, since=since.get(pair, default_since))
         if len(data) > 2:
             since[pair] = data[-2]['timestamp']
-            save_tickerdata(data=data, collection_name=f'kraken_trades_{pair}')
+            save_tickerdata2(data=data, collection_name=f'kraken_trades_{pair}')
         ipair+=1
     except BaseException as e:
         raise BaseException( f"{e} kraken_trades")

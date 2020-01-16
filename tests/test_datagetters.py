@@ -93,7 +93,7 @@ def test_get_news_data(m_get_settings, m_save_ticker ):
     init_mongodb()
     get_news_data()
 
-@patch('ticker.data_getters.save_tickerdata')
+@patch('ticker.data_getters.save_tickerdata2')
 def test_get_kraken_ticker(mock_save_tickerdata):
     get_kraken_trades()
     assert mock_save_tickerdata.called
