@@ -2,7 +2,7 @@ import logging
 import datetime as dt
 from time import sleep
 import _thread
-import types
+import traceback
 __all__ = ['Ticker_Scheduler']
 
 # callback: get_name(), get_data(), vad händer om klassen krashar? får inte vara en klass..
@@ -41,7 +41,6 @@ class Ticker_Scheduler():
             for i, callback in enumerate(self.callback_list):
                 try:
                     callback()
-
                 except BaseException as e:
-                    self.logger.error(f"callback:{callback}: {e}")
+                    self.logger.error(f"callback:{callback}: {e}, {traceback.format_exc()}")
             self._wait_until_next_update()
