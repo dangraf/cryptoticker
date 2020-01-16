@@ -48,9 +48,9 @@ def create_logger():
     logger.error("Main_scraper started")
 
 # todo, add automatic updates: https://hackthology.com/how-to-write-self-updating-python-programs-using-pip-and-git.html
-task_3sec = Ticker_Scheduler(update_period_s=4,
+task_4sec = Ticker_Scheduler(update_period_s=4,
                              callback_list=[get_kraken_orderdepth],
-                             taskname='1min tasks' )
+                             taskname='4s tasks')
 
 
 task_5min = Ticker_Scheduler(update_period_s=60 * 5, callback_list=[get_coinmarketcap,
@@ -61,15 +61,16 @@ task_5min = Ticker_Scheduler(update_period_s=60 * 5, callback_list=[get_coinmark
                                                                     get_blockchain_stats],
                              taskname='5min tasks')
 
-task_15min = Ticker_Scheduler(update_period_s=60 * 60, callback_list=[get_news_data,
-                                                                      get_bitcoincharts_data],
-                              taskname='15min tasks')
+task_60min = Ticker_Scheduler(update_period_s=60 * 60, callback_list=[get_news_data,
+                                                                      get_bitcoincharts_data,
+                                                                      get_kraken_trades],
+                              taskname='60min tasks')
 if __name__ == "__main__":
     init_mongodb()
     create_logger()
     task_5min.start_thread()
-    task_15min.start_thread()
-    task_3sec.start_thread()
+    task_60min.start_thread()
+    task_4sec.start_thread()
     app.run(host='0.0.0.0')
     while 1:
         sleep(20)

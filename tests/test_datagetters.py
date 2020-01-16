@@ -91,3 +91,12 @@ def test_get_news_data(m_get_settings, m_save_ticker ):
 
     init_mongodb()
     get_news_data()
+
+@patch('ticker.data_getters.save_tickerdata')
+def test_get_kraken_ticker(mock_save_tickerdata):
+    get_kraken_trades()
+    assert mock_save_tickerdata.called
+    colname = mock_save_tickerdata.call_args[1]['collection_name']
+    data = mock_save_tickerdata.call_args[1]['data']
+    assert colname == 'kraken_trades_ADA/USD'
+    assert type(data) is list

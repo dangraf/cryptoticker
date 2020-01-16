@@ -8,6 +8,7 @@ import krakenex
 import newspaper
 import logging
 import requests
+import ccxt
 
 
 # df_prev = None
@@ -18,7 +19,8 @@ __all__ = ['get_coinmarketcap',
            'get_bitcoincharts_data',
            'get_bitcoin_fees',
            'get_blockchain_stats',
-           'get_news_data']
+           'get_news_data',
+           'get_kraken_trades']
 
 def get_coinmarketcap():
     # global df_prev
@@ -96,6 +98,43 @@ def get_kraken_orderdepth():
     if i>0:
         raise Exception(f"Needed {i} tries for pair {pair}")
     return
+since = dict()
+ipair = 0
+
+def get_kraken_trades():
+    global since
+    global ipair
+    # pairs ?? same as for order depth?
+    pairs = ['ADA/USD',
+             'DAI/USD',
+             'DASH/USD',
+             'ETH/USD',
+             'LTC/USD',
+             'XTZ/USD',
+             'BTC/USD',
+             'EOS/USD',
+             'XRP/USD',
+             'USDT/USD']
+
+    try:
+        if ipair>len(pairs):
+            ipair=0
+
+        pair = pairs[ipair]
+        kraken = ccxt.kraken()
+        default_since = 24*60*60*1000 * 10 # ten days history
+        data = kraken.fetch_trades(symbol=pair, since=since.get(pair, default_since))
+        if len(data) > 2:
+            since[pair] = data[-2]['timestamp']
+            save_tickerdata(data=data, collection_name=f'kraken_trades_{pair}')
+        ipair+=1
+    except BaseException as e:
+        raise BaseException( f"{e} kraken_trades")
+
+
+
+
+
 
 def get_global_cap():
     getter = GetUrlData('https://api.coinmarketcap.com/v1/global/')

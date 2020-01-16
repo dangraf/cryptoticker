@@ -1,5 +1,7 @@
 import mongoengine
 from .mongo_doc import *
+from pymongo import MongoClient
+from datetime import datetime
 
 __all__ = ['init_mongodb',
            'save_tickerdata',
@@ -9,8 +11,17 @@ def init_mongodb():
     mongoengine.register_connection(alias='NewsDb', name='ticker_db', host='userver2', port=27017)
     mongoengine.register_connection(alias='ticker', name='ticker_db', host='userver2', port=27017)
 
+def save_tickerdata(*, data, collection_name:str):
+    client = MongoClient('userver2', 27017)
 
-def save_tickerdata(*, data, collection_name: str):
+    post = dict()
+    post['timestamp'] = datetime.now()
+    post['data'] = data
+
+    client['ticker_db'][collection_name].insert_one(post)
+
+
+def save_tickerdata_old(*, data, collection_name: str):
     try:
         obj = TickerData()
         obj.data = data
