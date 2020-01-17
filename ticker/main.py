@@ -60,15 +60,16 @@ task_5min = Ticker_Scheduler(update_period_s=60 * 5, callback_list=[get_coinmark
                                                                     get_bitcoin_fees,
                                                                     get_blockchain_stats],
                              taskname='5min tasks')
+task_15min = Ticker_Scheduler(update_period_s=60*15, callback_list= [get_kraken_trades])
 
 task_60min = Ticker_Scheduler(update_period_s=60 * 60, callback_list=[get_news_data,
-                                                                      get_bitcoincharts_data,
-                                                                      get_kraken_trades],
+                                                                      get_bitcoincharts_data],
                               taskname='60min tasks')
 if __name__ == "__main__":
     init_mongodb()
     create_logger()
     task_5min.start_thread()
+    task_15min.start_thread()
     task_60min.start_thread()
     task_4sec.start_thread()
     app.run(host='0.0.0.0')

@@ -123,7 +123,7 @@ def get_kraken_trades():
              'USDT/USD']
 
     try:
-        if ipair>len(pairs):
+        if ipair>=len(pairs):
             ipair=0
 
         pair = pairs[ipair]
