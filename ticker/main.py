@@ -60,7 +60,8 @@ task_5min = Ticker_Scheduler(update_period_s=60 * 5, callback_list=[get_coinmark
                                                                     get_bitcoin_fees,
                                                                     get_blockchain_stats],
                              taskname='5min tasks')
-task_15min = Ticker_Scheduler(update_period_s=60*15, callback_list= [get_kraken_trades])
+task_15min = Ticker_Scheduler(update_period_s=60*15, callback_list= [get_kraken_trades],
+                              taskname='15min_tasks')
 
 task_60min = Ticker_Scheduler(update_period_s=60 * 60, callback_list=[get_news_data,
                                                                       get_bitcoincharts_data],
