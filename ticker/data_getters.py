@@ -9,12 +9,17 @@ import newspaper
 import logging
 import requests
 import ccxt
+from requests import Request, Session
+from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+import json
 
 # df_prev = None
 __all__ = ['get_coinmarketcap',
+           'get_coinmarketcap2',
            'get_fear_greed_index',
            'get_kraken_orderdepth',
            'get_global_cap',
+           'get_global_cap_v2',
            'get_bitcoincharts_data',
            'get_bitcoin_fees',
            'get_blockchain_stats',
@@ -40,6 +45,67 @@ def get_coinmarketcap():
         df[f] = df[f].astype(float)
     save_tickerdata2(data=df.to_dict(orient='records'), collection_name="coinmarketcap_top100")
 
+
+
+#--------------------- Coin marketcap section
+
+def get_coin_marketcap_as_dict():
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
+    parameters1 = {
+        'start': '1',
+        'limit': '100',
+        'convert': 'USD'
+    }
+    parameters2 = {
+        'start': '1',
+        'limit': '100',
+        'convert': 'BTC'
+    }
+    headers = {
+        'Accepts': 'application/json',
+        'X-CMC_PRO_API_KEY': 'f96a1bb1-20b7-428f-9cbc-e76606d2b2f3',
+    }
+
+    session = Session()
+    session.headers.update(headers)
+
+    try:
+        response_usd = session.get(url, params=parameters1)
+        data_usd = json.loads(response_usd.text)
+
+        response_btc = session.get(url, params=parameters2)
+        data_btc = json.loads(response_btc.text)
+    except (ConnectionError, Timeout, TooManyRedirects) as e:
+        print(e)
+    return data_usd, data_btc
+
+def get_base_info( item ):
+    return {k:v for k, v in item.items() if type(v) is not dict}
+
+def get_item_info(item):
+    name = next(iter(item['quote']))
+    return {f'{name}_{k}':v for k, v in item['quote'][name].items() if type(v) is not dict}
+
+def data_to_df(resp):
+    dlist = list()
+    for i in range(len(resp[0]['data'])):
+        if resp[0]['data'][i]['name'] == resp[1]['data'][i]['name']:
+            base=  get_base_info(resp[0]['data'][i])
+            usd = get_item_info(resp[0]['data'][i])
+            btc = get_item_info(resp[1]['data'][i])
+            dlist.append({**base, **usd, **btc})
+    return pd.DataFrame(dlist)
+
+
+def get_coinmarketcap2():
+    resp = get_coin_marketcap_as_dict()
+    df = data_to_df(resp)
+    df.drop('platform', axis=1, inplace=True)
+    df['last_updated'] = pd.to_datetime(df['last_updated'])
+    df['USD_last_updated'] = pd.to_datetime(df['USD_last_updated'])
+    df['BTC_last_updated'] = pd.to_datetime(df['BTC_last_updated'])
+
+    save_tickerdata2(data=df.to_dict(orient='records'), collection_name="coinmarketcap_top100_v2")
 
 
 def get_fear_greed_index():
@@ -134,6 +200,7 @@ def get_kraken_trades():
             since[pair] = data[-2]['timestamp']
             save_tickerdata2(data=data, collection_name=f'kraken_trades_{pair}')
         ipair+=1
+
     except BaseException as e:
         raise BaseException( f"{e} kraken_trades")
 
@@ -141,7 +208,14 @@ def get_kraken_trades():
 
 
 
+def get_global_cap_v2():
+    headers = {
+        'Accepts': 'application/json',
+        'X-CMC_PRO_API_KEY': 'f96a1bb1-20b7-428f-9cbc-e76606d2b2f3',
+    }
 
+    data = get_data(url='https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/latest', headers=headers)
+    save_tickerdata2(data=data, collection_name='global_market_v2')
 
 def get_global_cap():
     data = get_data(url='http://api.coinmarketcap.com/v1/global/')

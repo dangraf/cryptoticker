@@ -10,24 +10,25 @@ from time import sleep
 @patch('ticker.data_getters.save_tickerdata2')
 def test_coinmarketcap(mock_save_tickerdata):
     # test
-    get_coinmarketcap()
+    get_coinmarketcap2()
     # verify
     assert mock_save_tickerdata.called
     colname = mock_save_tickerdata.call_args[1]['collection_name']
     data = mock_save_tickerdata.call_args[1]['data']
-    assert colname == 'coinmarketcap_top100'
+    assert colname == 'coinmarketcap_top100_v2'
     assert len(data) == 100
 
 @patch('ticker.data_getters.save_tickerdata2')
 def test_globalcap(mock_save_tickerdata):
     # test
-    get_global_cap()
+    get_global_cap_v2()
     # verify
     assert mock_save_tickerdata.called
     colname = mock_save_tickerdata.call_args[1]['collection_name']
     data = mock_save_tickerdata.call_args[1]['data']
-    assert colname == 'global_market'
-    assert len(data) == 7
+    assert colname == 'global_market_v2'
+    assert len(data) == 2
+    assert len(data['data']) == 9
 
 @patch('ticker.data_getters.save_tickerdata2')
 def test_bitcoin_fees( mock_save_tickerdata):

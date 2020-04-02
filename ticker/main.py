@@ -53,9 +53,9 @@ task_4sec = Ticker_Scheduler(update_period_s=4,
                              taskname='4s tasks')
 
 
-task_5min = Ticker_Scheduler(update_period_s=60 * 5, callback_list=[get_coinmarketcap,
+task_5min = Ticker_Scheduler(update_period_s=60 * 5, callback_list=[get_coinmarketcap2,
                                                                     get_fear_greed_index,
-                                                                    get_global_cap,
+                                                                    get_global_cap_v2,
                                                                     get_bitcoincharts_data,
                                                                     get_bitcoin_fees,
                                                                     get_blockchain_stats],
