@@ -58,7 +58,7 @@ def get_coin_marketcap_as_dict():
     }
     headers = {
         'Accepts': 'application/json',
-        'X-CMC_PRO_API_KEY': 'f96a1bb1-20b7-428f-9cbc-e76606d2b2f3',
+        'X-CMC_PRO_API_KEY': '170ab6bc-e683-421d-beef-33ef254b9498',
     }
 
     session = Session()
