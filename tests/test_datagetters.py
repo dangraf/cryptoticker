@@ -69,7 +69,7 @@ def test_fear_and_greed_index(mock_save_tickerdata):
 
 @patch('ticker.data_getters.save_tickerdata2')
 def test_get_kraken_orderdepth(mock_save_tickerdata):
-    for i in range(7):
+    for i in range(10):
         get_kraken_orderdepth()
         assert mock_save_tickerdata.called
         colname = mock_save_tickerdata.call_args[1]['collection_name']
